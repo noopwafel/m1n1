@@ -1734,6 +1734,8 @@ class HV(Reloadable):
             self.p.memcpy8(guest_base + preoslog_off, preoslog_start, preoslog_size)
 
         print(f"Adjusting addresses in ADT...")
+        # The DRAM region before guest_base contains m1n1 (including m1n1/proxy heaps).
+        self.adt["chosen"]["memory-map"].MemoryMapReserved_0 = (self.ram_base, guest_base - self.ram_base)
         self.adt["chosen"]["memory-map"].SEPFW = (guest_base + sepfw_off, sepfw_length)
         self.adt["chosen"]["memory-map"].TrustCache = (tc_base, tc_size)
         self.adt["chosen"]["memory-map"].DeviceTree = (self.adt_base, align(self.u.ba.devtree_size))
